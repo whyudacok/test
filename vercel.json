@@ -1,10 +1,7 @@
 {
-   "version": 2,
-   "name": "music-album",
-   "builds": [
-      { "src": "server.js", "use": "@vercel/node" }
-   ],
-   "routes": [
-      { "src": "/(.*)", "dest": "/server.js" }
-   ]
+  "functions": {
+    "*.php": {
+      "runtime": "vercel-php@0.6.1"
+    }
+  }
 }
