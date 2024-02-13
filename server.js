@@ -1,15 +1,18 @@
 const { createServer } = require('http');
 const { parse } = require('url');
 const { exec } = require('child_process');
+const path = require('path');
 
 const server = createServer((req, res) => {
   const { pathname, query } = parse(req.url, true);
   
-  // Memeriksa apakah URL adalah "/index.php" dan memiliki parameter "id"
-  if (pathname === 'index.php' && query.id) {
+  // Menjalankan skrip PHP jika path adalah "/index.php" dan terdapat parameter "id"
+  if (pathname === '/index.php' && query.id) {
     const id = query.id;
-    // Menjalankan skrip PHP dengan parameter yang diberikan
-    exec(`php index.php?id=${id}`, (error, stdout, stderr) => {
+    const phpScriptPath = path.join(__dirname, 'index.php');
+    
+    // Menjalankan skrip PHP menggunakan PHP-CGI
+    exec(`php-cgi -f ${phpScriptPath} id=${id}`, (error, stdout, stderr) => {
       if (error) {
         res.writeHead(500, { 'Content-Type': 'text/plain' });
         res.write(`Error: ${error.message}`);
@@ -22,12 +25,12 @@ const server = createServer((req, res) => {
         res.end();
         return;
       }
-      // Menulis keluaran dari skrip PHP sebagai respons
       res.writeHead(200, { 'Content-Type': 'text/html' });
       res.write(stdout);
       res.end();
     });
   } else {
+    // Menangani path yang tidak dikenal
     res.writeHead(404, { 'Content-Type': 'text/plain' });
     res.write('Not Found');
     res.end();
