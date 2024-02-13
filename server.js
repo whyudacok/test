@@ -6,7 +6,7 @@ const server = createServer((req, res) => {
   const { pathname, query } = parse(req.url, true);
   
   // Memeriksa apakah URL adalah "/index.php" dan memiliki parameter "id"
-  if (pathname === '/index.php' && query.id) {
+  if (pathname === 'index.php' && query.id) {
     const id = query.id;
     // Menjalankan skrip PHP dengan parameter yang diberikan
     exec(`php index.php?id=${id}`, (error, stdout, stderr) => {
